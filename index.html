@@ -123,7 +123,7 @@
             transform: translateY(100%);
         }
 
-        /* Draggable Floating Widget Styling (ย่อขนาดลง 30%) */
+        /* Draggable Floating Widget Styling */
         #draggable-widget {
             position: fixed;
             z-index: 9999;
@@ -139,7 +139,7 @@
 </head>
 <body class="h-screen flex flex-col justify-between bg-espresso text-creamText overflow-hidden select-none">
 
-    <!-- DRAGGABLE FLOATING CONTROLLER WIDGET (ปุ่มลอยป๊อบอัพลากได้ ขนาดเล็กลง 30% ข้อความคำว่า "ปิด") -->
+    <!-- DRAGGABLE FLOATING CONTROLLER WIDGET -->
     <div id="draggable-widget" class="hidden flex items-center gap-1 px-2.5 py-1 rounded-full glass-panel border border-amberWarm/60 text-amberWarm shadow-widget active:scale-95 transition-transform duration-75">
         <div class="flex items-center gap-1.5 pointer-events-none">
             <img src="https://lh3.googleusercontent.com/d/13URW3wYnrYhy0aHzrwHG5Xx83pvcyBvL" class="w-4 h-4 rounded-full object-cover border border-amberWarm/50 shadow-inner">
@@ -188,166 +188,150 @@
     <main class="flex-1 relative overflow-hidden bg-gradient-to-b from-espresso via-roast/40 to-espresso">
 
         <!-- 1. HUB DASHBOARD VIEW -->
-        <div id="view-hub" class="h-full overflow-y-auto p-4 pb-28 space-y-5">
+        <div id="view-hub" class="h-full overflow-y-auto p-3.5 pb-28 space-y-4">
 
             <!-- Hero Banner -->
-            <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-roast via-cardBg to-espresso p-5 border border-amberGold/25 shadow-2xl">
-                <div class="absolute -right-8 -bottom-8 w-48 h-48 bg-amberWarm/10 rounded-full blur-2xl pointer-events-none"></div>
+            <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-roast via-cardBg to-espresso p-3.5 border border-amberGold/25 shadow-xl">
+                <div class="absolute -right-6 -bottom-6 w-32 h-32 bg-amberWarm/10 rounded-full blur-xl pointer-events-none"></div>
                 
-                <div class="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div class="relative z-10 flex flex-col justify-between gap-2.5">
                     <div>
-                        <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amberWarm/15 border border-amberWarm/30 text-amberWarm text-[11px] font-medium mb-2">
-                            <i class="fa-solid fa-wand-magic-sparkles text-xs"></i> 037 Workspace Central
+                        <div class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amberWarm/15 border border-amberWarm/30 text-amberWarm text-[10px] font-medium mb-1.5">
+                            <i class="fa-solid fa-wand-magic-sparkles text-[9px]"></i> 037 Workspace Central
                         </div>
-                        <h2 class="font-kanit text-xl sm:text-2xl font-bold text-stone-100 tracking-tight">
-                            ศูนย์รวมระบบบริหารร้าน <span class="text-amberWarm">037</span>
+                        <h2 class="font-kanit text-base sm:text-lg font-bold text-stone-100 tracking-tight">
+                            รวมระบบร้าน <span class="text-amberWarm">037Cafe&Studio</span>
                         </h2>
-                        <p class="text-xs text-stone-300/80 mt-1 max-w-md leading-relaxed">
+                        <p class="text-[11px] text-stone-300/80 mt-0.5 leading-relaxed">
                             เลือกใช้งานระบบสต๊อก ยอดขาย และพอร์ตโฟลิโอได้ง่ายในแอปเดียว
                         </p>
                     </div>
 
                     <!-- Live Mobile Clock Display -->
-                    <div class="sm:hidden w-full flex items-center justify-between pt-2 border-t border-stone-800 text-xs">
-                        <span class="text-stone-400 text-[11px]"><i class="fa-regular fa-clock text-amberWarm mr-1"></i> เวลาปัจจุบัน</span>
+                    <div class="sm:hidden w-full flex items-center justify-between pt-2 border-t border-stone-800/80 text-[11px]">
+                        <span class="text-stone-400 text-[10px]"><i class="fa-regular fa-clock text-amberWarm mr-1"></i> เวลาปัจจุบัน</span>
                         <div class="text-right">
-                            <span id="live-time-mobile" class="font-mono font-bold text-amberWarm text-xs">--:--:--</span>
-                            <span id="live-date-mobile" class="text-[10px] text-stone-400 ml-1.5">--/--/----</span>
+                            <span id="live-time-mobile" class="font-mono font-bold text-amberWarm text-[11px]">--:--:--</span>
+                            <span id="live-date-mobile" class="text-[9px] text-stone-400 ml-1">--/--/----</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- iOS PWA INSTALLATION TIP BANNER -->
-            <div id="ios-pwa-banner" class="glass-panel rounded-2xl p-3.5 border-amberWarm/30 flex items-center justify-between gap-3 text-xs">
-                <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-xl bg-amberWarm/20 text-amberWarm flex items-center justify-center text-base shrink-0 border border-amberWarm/30">
-                        <i class="fa-solid fa-mobile-screen-button"></i>
-                    </div>
-                    <div>
-                        <p class="font-semibold text-amber-100">ติดตั้งลงหน้าจอมือถือ (iOS/Android)</p>
-                        <p class="text-[11px] text-stone-400">กดปุ่มแชร์ <i class="fa-solid fa-share-from-square text-amberWarm"></i> แล้วเลือก <b>"เพิ่มไปยังหน้าจอโฮม"</b></p>
-                    </div>
-                </div>
-                <button onclick="dismissPwaBanner()" class="p-1.5 text-stone-400 hover:text-stone-200 transition">
-                    <i class="fa-solid fa-xmark text-sm"></i>
-                </button>
-            </div>
-
             <!-- QUICK CARDS DIRECTORY GRID -->
             <div>
-                <div class="flex items-center justify-between mb-3 px-1">
-                    <h3 class="font-kanit font-semibold text-base text-stone-200 flex items-center gap-2">
+                <div class="flex items-center justify-between mb-2.5 px-1">
+                    <h3 class="font-kanit font-semibold text-xs sm:text-sm text-stone-200 flex items-center gap-1.5">
                         <i class="fa-solid fa-layer-group text-amberWarm"></i> เลือกระบบที่ต้องการใช้งาน
                     </h3>
-                    <span class="text-[11px] text-amber-400/80 font-mono">4 Systems</span>
+                    <span class="text-[10px] text-amber-400/80 font-mono">4 Systems</span>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
 
                     <!-- Card 1: Stock -->
-                    <div class="glass-panel rounded-2xl p-4 transition-all duration-200 hover:border-amberWarm/40 active:scale-[0.99] flex flex-col justify-between gap-3">
+                    <div class="glass-panel rounded-2xl p-3.5 transition-all duration-200 hover:border-amberWarm/40 active:scale-[0.99] flex flex-col justify-between gap-2.5">
                         <div class="flex items-start justify-between">
-                            <div class="flex items-center gap-3">
-                                <div class="w-12 h-12 rounded-2xl bg-amber-500/15 text-amberWarm border border-amber-500/30 flex items-center justify-center text-xl shadow-inner-dark">
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-10 h-10 rounded-xl bg-amber-500/15 text-amberWarm border border-amber-500/30 flex items-center justify-center text-base shadow-inner-dark">
                                     <i class="fa-solid fa-boxes-stacked"></i>
                                 </div>
                                 <div>
-                                    <h4 class="font-kanit font-bold text-base text-stone-100">1. สต๊อกสินค้า</h4>
-                                    <p class="text-[11px] text-stone-400">คลังวัตถุดิบ & เช็คสต๊อก</p>
+                                    <h4 class="font-kanit font-bold text-sm text-stone-100">1. สต๊อกสินค้า</h4>
+                                    <p class="text-[10px] text-stone-400">คลังวัตถุดิบ & เช็คสต๊อก</p>
                                 </div>
                             </div>
-                            <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 flex items-center gap-1">
+                            <span class="px-2 py-0.5 rounded-full text-[9px] font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 flex items-center gap-1">
                                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> ออนไลน์
                             </span>
                         </div>
 
                         <div class="flex items-center gap-2 pt-1 border-t border-stone-800">
-                            <button onclick="switchView('stock')" class="flex-1 bg-gradient-to-r from-amberGold to-amberWarm hover:brightness-110 text-stone-950 font-bold py-2 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-gold-glow transition">
+                            <button onclick="switchView('stock')" class="flex-1 bg-gradient-to-r from-amberGold to-amberWarm hover:brightness-110 text-stone-950 font-bold py-1.5 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-gold-glow transition">
                                 <i class="fa-solid fa-display"></i> เปิดในแอป
                             </button>
-                            <a href="https://037cafestockv3.vercel.app/" target="_blank" class="p-2 bg-stone-800 hover:bg-stone-700 text-stone-300 rounded-xl text-xs border border-stone-700 transition" title="เปิดแท็บใหม่">
+                            <a href="https://037cafestockv3.vercel.app/" target="_blank" class="p-1.5 bg-stone-800 hover:bg-stone-700 text-stone-300 rounded-xl text-xs border border-stone-700 transition" title="เปิดแท็บใหม่">
                                 <i class="fa-solid fa-arrow-up-right-from-square"></i>
                             </a>
                         </div>
                     </div>
 
                     <!-- Card 2: Studio Sales -->
-                    <div class="glass-panel rounded-2xl p-4 transition-all duration-200 hover:border-amberWarm/40 active:scale-[0.99] flex flex-col justify-between gap-3">
+                    <div class="glass-panel rounded-2xl p-3.5 transition-all duration-200 hover:border-amberWarm/40 active:scale-[0.99] flex flex-col justify-between gap-2.5">
                         <div class="flex items-start justify-between">
-                            <div class="flex items-center gap-3">
-                                <div class="w-12 h-12 rounded-2xl bg-indigo-500/15 text-indigo-400 border border-indigo-500/30 flex items-center justify-center text-xl shadow-inner-dark">
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-10 h-10 rounded-xl bg-indigo-500/15 text-indigo-400 border border-indigo-500/30 flex items-center justify-center text-base shadow-inner-dark">
                                     <i class="fa-solid fa-camera-retro"></i>
                                 </div>
                                 <div>
-                                    <h4 class="font-kanit font-bold text-base text-stone-100">2. 037StudioSales</h4>
-                                    <p class="text-[11px] text-stone-400">ระบบขาย & จองคิว Studio</p>
+                                    <h4 class="font-kanit font-bold text-sm text-stone-100">2. 037StudioSales</h4>
+                                    <p class="text-[10px] text-stone-400">ระบบขาย & จองคิว Studio</p>
                                 </div>
                             </div>
-                            <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 flex items-center gap-1">
+                            <span class="px-2 py-0.5 rounded-full text-[9px] font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 flex items-center gap-1">
                                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> ออนไลน์
                             </span>
                         </div>
 
                         <div class="flex items-center gap-2 pt-1 border-t border-stone-800">
-                            <button onclick="switchView('studiosales')" class="flex-1 bg-gradient-to-r from-amberGold to-amberWarm hover:brightness-110 text-stone-950 font-bold py-2 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-gold-glow transition">
+                            <button onclick="switchView('studiosales')" class="flex-1 bg-gradient-to-r from-amberGold to-amberWarm hover:brightness-110 text-stone-950 font-bold py-1.5 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-gold-glow transition">
                                 <i class="fa-solid fa-display"></i> เปิดในแอป
                             </button>
-                            <a href="https://037studiosales.vercel.app/" target="_blank" class="p-2 bg-stone-800 hover:bg-stone-700 text-stone-300 rounded-xl text-xs border border-stone-700 transition" title="เปิดแท็บใหม่">
+                            <a href="https://037studiosales.vercel.app/" target="_blank" class="p-1.5 bg-stone-800 hover:bg-stone-700 text-stone-300 rounded-xl text-xs border border-stone-700 transition" title="เปิดแท็บใหม่">
                                 <i class="fa-solid fa-arrow-up-right-from-square"></i>
                             </a>
                         </div>
                     </div>
 
                     <!-- Card 3: Cafe Sales -->
-                    <div class="glass-panel rounded-2xl p-4 transition-all duration-200 hover:border-amberWarm/40 active:scale-[0.99] flex flex-col justify-between gap-3">
+                    <div class="glass-panel rounded-2xl p-3.5 transition-all duration-200 hover:border-amberWarm/40 active:scale-[0.99] flex flex-col justify-between gap-2.5">
                         <div class="flex items-start justify-between">
-                            <div class="flex items-center gap-3">
-                                <div class="w-12 h-12 rounded-2xl bg-amber-600/15 text-amber-500 border border-amber-600/30 flex items-center justify-center text-xl shadow-inner-dark">
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-10 h-10 rounded-xl bg-amber-600/15 text-amber-500 border border-amber-600/30 flex items-center justify-center text-base shadow-inner-dark">
                                     <i class="fa-solid fa-mug-hot"></i>
                                 </div>
                                 <div>
-                                    <h4 class="font-kanit font-bold text-base text-stone-100">3. 037CafeSales</h4>
-                                    <p class="text-[11px] text-stone-400">ระบบขายหน้าร้าน Cafe POS</p>
+                                    <h4 class="font-kanit font-bold text-sm text-stone-100">3. 037CafeSales</h4>
+                                    <p class="text-[10px] text-stone-400">ระบบขายหน้าร้าน Cafe POS</p>
                                 </div>
                             </div>
-                            <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 flex items-center gap-1">
+                            <span class="px-2 py-0.5 rounded-full text-[9px] font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 flex items-center gap-1">
                                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> ออนไลน์
                             </span>
                         </div>
 
                         <div class="flex items-center gap-2 pt-1 border-t border-stone-800">
-                            <button onclick="switchView('cafesales')" class="flex-1 bg-gradient-to-r from-amberGold to-amberWarm hover:brightness-110 text-stone-950 font-bold py-2 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-gold-glow transition">
+                            <button onclick="switchView('cafesales')" class="flex-1 bg-gradient-to-r from-amberGold to-amberWarm hover:brightness-110 text-stone-950 font-bold py-1.5 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-gold-glow transition">
                                 <i class="fa-solid fa-display"></i> เปิดในแอป
                             </button>
-                            <a href="https://037cafestudiosales.vercel.app/" target="_blank" class="p-2 bg-stone-800 hover:bg-stone-700 text-stone-300 rounded-xl text-xs border border-stone-700 transition" title="เปิดแท็บใหม่">
+                            <a href="https://037cafestudiosales.vercel.app/" target="_blank" class="p-1.5 bg-stone-800 hover:bg-stone-700 text-stone-300 rounded-xl text-xs border border-stone-700 transition" title="เปิดแท็บใหม่">
                                 <i class="fa-solid fa-arrow-up-right-from-square"></i>
                             </a>
                         </div>
                     </div>
 
                     <!-- Card 4: Studio Portfolio -->
-                    <div class="glass-panel rounded-2xl p-4 transition-all duration-200 hover:border-amberWarm/40 active:scale-[0.99] flex flex-col justify-between gap-3">
+                    <div class="glass-panel rounded-2xl p-3.5 transition-all duration-200 hover:border-amberWarm/40 active:scale-[0.99] flex flex-col justify-between gap-2.5">
                         <div class="flex items-start justify-between">
-                            <div class="flex items-center gap-3">
-                                <div class="w-12 h-12 rounded-2xl bg-rose-500/15 text-rose-400 border border-rose-500/30 flex items-center justify-center text-xl shadow-inner-dark">
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-10 h-10 rounded-xl bg-rose-500/15 text-rose-400 border border-rose-500/30 flex items-center justify-center text-base shadow-inner-dark">
                                     <i class="fa-solid fa-photo-film"></i>
                                 </div>
                                 <div>
-                                    <h4 class="font-kanit font-bold text-base text-stone-100">4. 037StudioPortfolio</h4>
-                                    <p class="text-[11px] text-stone-400">เว็บพอร์ตโพลีโอ & ผลงาน</p>
+                                    <h4 class="font-kanit font-bold text-sm text-stone-100">4. 037StudioPortfolio</h4>
+                                    <p class="text-[10px] text-stone-400">เว็บพอร์ตโพลีโอ & ผลงาน</p>
                                 </div>
                             </div>
-                            <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 flex items-center gap-1">
+                            <span class="px-2 py-0.5 rounded-full text-[9px] font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 flex items-center gap-1">
                                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> ออนไลน์
                             </span>
                         </div>
 
                         <div class="flex items-center gap-2 pt-1 border-t border-stone-800">
-                            <button onclick="switchView('portfolio')" class="flex-1 bg-gradient-to-r from-amberGold to-amberWarm hover:brightness-110 text-stone-950 font-bold py-2 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-gold-glow transition">
+                            <button onclick="switchView('portfolio')" class="flex-1 bg-gradient-to-r from-amberGold to-amberWarm hover:brightness-110 text-stone-950 font-bold py-1.5 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-gold-glow transition">
                                 <i class="fa-solid fa-display"></i> เปิดในแอป
                             </button>
-                            <a href="https://037studio-portfolio.vercel.app/" target="_blank" class="p-2 bg-stone-800 hover:bg-stone-700 text-stone-300 rounded-xl text-xs border border-stone-700 transition" title="เปิดแท็บใหม่">
+                            <a href="https://037studio-portfolio.vercel.app/" target="_blank" class="p-1.5 bg-stone-800 hover:bg-stone-700 text-stone-300 rounded-xl text-xs border border-stone-700 transition" title="เปิดแท็บใหม่">
                                 <i class="fa-solid fa-arrow-up-right-from-square"></i>
                             </a>
                         </div>
@@ -357,20 +341,20 @@
             </div>
 
             <!-- SYSTEM STATS / QUICK INFO -->
-            <div class="glass-panel rounded-2xl p-4 border-stone-800 text-xs flex justify-around text-center">
+            <div class="glass-panel rounded-2xl p-3 border-stone-800 text-xs flex justify-around text-center">
                 <div>
-                    <span class="block text-amberWarm font-bold text-lg font-mono">4</span>
-                    <span class="text-stone-400 text-[11px]">เว็บทั้งหมด</span>
+                    <span class="block text-amberWarm font-bold text-base font-mono">4</span>
+                    <span class="text-stone-400 text-[10px]">เว็บทั้งหมด</span>
                 </div>
-                <div class="w-px bg-stone-800 h-8 my-auto"></div>
+                <div class="w-px bg-stone-800 h-7 my-auto"></div>
                 <div>
-                    <span class="block text-emerald-400 font-bold text-lg font-mono">100%</span>
-                    <span class="text-stone-400 text-[11px]">สถานะระบบ</span>
+                    <span class="block text-emerald-400 font-bold text-base font-mono">100%</span>
+                    <span class="text-stone-400 text-[10px]">สถานะระบบ</span>
                 </div>
-                <div class="w-px bg-stone-800 h-8 my-auto"></div>
+                <div class="w-px bg-stone-800 h-7 my-auto"></div>
                 <div>
-                    <span class="block text-indigo-400 font-bold text-lg font-mono">PWA</span>
-                    <span class="text-stone-400 text-[11px]">รองรับมือถือ</span>
+                    <span class="block text-indigo-400 font-bold text-base font-mono">PWA</span>
+                    <span class="text-stone-400 text-[10px]">รองรับมือถือ</span>
                 </div>
             </div>
 
@@ -682,11 +666,6 @@
                 loader.classList.remove('hidden');
                 mainFrame.src = sites[currentKey].url;
             }
-        }
-
-        function dismissPwaBanner() {
-            const banner = document.getElementById('ios-pwa-banner');
-            if (banner) banner.style.display = 'none';
         }
     </script>
 </body>
