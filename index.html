@@ -50,6 +50,7 @@
                         'amber-glow': '0 0 25px -5px rgba(217, 119, 6, 0.35)',
                         'gold-glow': '0 4px 20px -2px rgba(245, 158, 11, 0.4)',
                         'inner-dark': 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.6)',
+                        'widget': '0 8px 20px -4px rgba(0, 0, 0, 0.7), 0 0 12px rgba(245, 158, 11, 0.25)',
                     }
                 }
             }
@@ -70,23 +71,25 @@
             padding-bottom: env(safe-area-inset-bottom);
             padding-left: env(safe-area-inset-left);
             padding-right: env(safe-area-inset-right);
-            overflow-x: hidden;
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
         }
 
         /* Glassmorphism Effect */
         .glass-panel {
-            background: rgba(28, 25, 23, 0.75);
+            background: rgba(28, 25, 23, 0.85);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(217, 119, 6, 0.15);
+            border: 1px solid rgba(217, 119, 6, 0.25);
         }
 
         .glass-dock {
-            background: rgba(12, 10, 9, 0.88);
+            background: rgba(12, 10, 9, 0.92);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border-top: 1px solid rgba(245, 158, 11, 0.2);
-            transition: transform 0.3s ease-in-out;
+            border-top: 1px solid rgba(245, 158, 11, 0.25);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         /* Custom Scrollbar */
@@ -107,9 +110,9 @@
             color: #f59e0b !important;
         }
         .bottom-nav-active .nav-icon-bg {
-            background-color: rgba(217, 119, 6, 0.2);
+            background-color: rgba(217, 119, 6, 0.25);
             box-shadow: 0 0 12px rgba(245, 158, 11, 0.4);
-            border: 1px solid rgba(245, 158, 11, 0.4);
+            border: 1px solid rgba(245, 158, 11, 0.5);
         }
 
         /* Animation classes for toolbars */
@@ -119,16 +122,33 @@
         .dock-hidden {
             transform: translateY(100%);
         }
+
+        /* Draggable Floating Widget Styling (ย่อขนาดลง 30%) */
+        #draggable-widget {
+            position: fixed;
+            z-index: 9999;
+            top: calc(env(safe-area-inset-top) + 60px);
+            right: 12px;
+            touch-action: none;
+            cursor: grab;
+        }
+        #draggable-widget:active {
+            cursor: grabbing;
+        }
     </style>
 </head>
 <body class="h-screen flex flex-col justify-between bg-espresso text-creamText overflow-hidden select-none">
 
-    <!-- FLOATING RESTORE BUTTON (แสดงเมื่อพับแถบเครื่องมือ) -->
-    <button id="btn-restore-controls" onclick="toggleToolbars(true)" class="hidden fixed top-3 right-3 z-50 p-2 rounded-full glass-panel border border-amberWarm/50 text-amberWarm shadow-lg active:scale-95 transition flex items-center justify-center gap-1.5 px-3">
-        <img src="https://lh3.googleusercontent.com/d/13URW3wYnrYhy0aHzrwHG5Xx83pvcyBvL" class="w-5 h-5 rounded-full object-cover">
-        <span class="text-[11px] font-bold">เปิดเมนู</span>
-        <i class="fa-solid fa-chevron-down text-xs"></i>
-    </button>
+    <!-- DRAGGABLE FLOATING CONTROLLER WIDGET (ปุ่มลอยป๊อบอัพลากได้ ขนาดเล็กลง 30% ข้อความคำว่า "ปิด") -->
+    <div id="draggable-widget" class="hidden flex items-center gap-1 px-2.5 py-1 rounded-full glass-panel border border-amberWarm/60 text-amberWarm shadow-widget active:scale-95 transition-transform duration-75">
+        <div class="flex items-center gap-1.5 pointer-events-none">
+            <img src="https://lh3.googleusercontent.com/d/13URW3wYnrYhy0aHzrwHG5Xx83pvcyBvL" class="w-4 h-4 rounded-full object-cover border border-amberWarm/50 shadow-inner">
+            <span id="widget-status-text" class="text-[10px] font-bold text-amber-100 tracking-wide font-kanit">ปิด</span>
+        </div>
+        <button id="widget-toggle-btn" class="ml-0.5 text-amberWarm hover:text-amber-300 p-0.5 focus:outline-none" title="เปิด/ปิด แถบเครื่องมือ">
+            <i id="widget-icon" class="fa-solid fa-chevron-down text-[9px] transition-transform duration-300"></i>
+        </button>
+    </div>
 
     <!-- TOP HEADER BAR -->
     <header id="main-header" class="sticky top-0 z-40 bg-roast/90 backdrop-blur-xl border-b border-amberGold/20 px-4 py-2.5 flex items-center justify-between shadow-lg transition-all duration-300">
@@ -148,7 +168,7 @@
             </div>
         </div>
 
-        <!-- Live Clock & Mode Control -->
+        <!-- Live Clock & Quick Control -->
         <div class="flex items-center space-x-2">
             <!-- Digital Clock Badge -->
             <div class="hidden sm:flex flex-col items-end px-2.5 py-1 rounded-xl bg-espresso/60 border border-amberGold/20 text-right">
@@ -156,7 +176,7 @@
                 <span id="live-date" class="text-[9px] text-stone-400">-- --- ----</span>
             </div>
 
-            <!-- Reload / Quick Switch -->
+            <!-- Home Button -->
             <button onclick="switchView('hub')" class="p-2 rounded-xl bg-amberGold/15 text-amberWarm border border-amberGold/30 hover:bg-amberGold/30 transition active:scale-95 text-xs font-semibold flex items-center gap-1.5">
                 <i class="fa-solid fa-house-chimney"></i>
                 <span class="hidden xs:inline">หน้าแรก</span>
@@ -480,6 +500,7 @@
         };
 
         let currentKey = 'hub';
+        let isToolbarsVisible = true;
 
         // Thai Live Clock Function
         function updateLiveClock() {
@@ -504,31 +525,111 @@
 
         // Function สำหรับ ซ่อน/แสดง แถบเครื่องมือทั้งหมด
         function toggleToolbars(show) {
+            if (typeof show === 'boolean') {
+                isToolbarsVisible = show;
+            } else {
+                isToolbarsVisible = !isToolbarsVisible;
+            }
+
             const header = document.getElementById('main-header');
             const subToolbar = document.getElementById('sub-toolbar');
             const bottomDock = document.getElementById('bottom-dock');
-            const btnRestore = document.getElementById('btn-restore-controls');
+            const widgetIcon = document.getElementById('widget-icon');
+            const draggableWidget = document.getElementById('draggable-widget');
 
-            if (show) {
+            if (isToolbarsVisible) {
                 header.classList.remove('toolbar-hidden');
                 subToolbar.classList.remove('toolbar-hidden');
                 bottomDock.classList.remove('dock-hidden');
-                btnRestore.classList.add('hidden');
+                if (widgetIcon) widgetIcon.className = "fa-solid fa-chevron-up text-[9px] transition-transform duration-300";
             } else {
                 header.classList.add('toolbar-hidden');
                 subToolbar.classList.add('toolbar-hidden');
                 bottomDock.classList.add('dock-hidden');
-                btnRestore.classList.remove('hidden');
+                if (widgetIcon) widgetIcon.className = "fa-solid fa-chevron-down text-[9px] transition-transform duration-300";
+            }
+
+            // แสดงปุ่มลอยเมื่อเปิดดูหน้าเว็บย่อย (ไม่ใช่หน้า Hub)
+            if (currentKey !== 'hub') {
+                if (draggableWidget) draggableWidget.classList.remove('hidden');
+            } else {
+                if (draggableWidget) draggableWidget.classList.add('hidden');
             }
         }
+
+        // DRAGGABLE WIDGET IMPLEMENTATION
+        const widget = document.getElementById('draggable-widget');
+        let isDragging = false;
+        let dragHasMoved = false;
+        let startX, startY, initialLeft, initialTop;
+
+        function onDragStart(e) {
+            isDragging = true;
+            dragHasMoved = false;
+
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+            startX = clientX;
+            startY = clientY;
+
+            const rect = widget.getBoundingClientRect();
+            initialLeft = rect.left;
+            initialTop = rect.top;
+
+            widget.style.right = 'auto';
+            widget.style.left = `${initialLeft}px`;
+            widget.style.top = `${initialTop}px`;
+        }
+
+        function onDragMove(e) {
+            if (!isDragging) return;
+
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+            const deltaX = clientX - startX;
+            const deltaY = clientY - startY;
+
+            if (Math.abs(deltaX) > 5 || Math.abs(deltaY) > 5) {
+                dragHasMoved = true;
+            }
+
+            let newLeft = initialLeft + deltaX;
+            let newTop = initialTop + deltaY;
+
+            const maxLeft = window.innerWidth - widget.offsetWidth - 10;
+            const maxTop = window.innerHeight - widget.offsetHeight - 10;
+
+            newLeft = Math.max(10, Math.min(newLeft, maxLeft));
+            newTop = Math.max(10, Math.min(newTop, maxTop));
+
+            widget.style.left = `${newLeft}px`;
+            widget.style.top = `${newTop}px`;
+        }
+
+        function onDragEnd() {
+            isDragging = false;
+        }
+
+        widget.addEventListener('touchstart', onDragStart, { passive: true });
+        window.addEventListener('touchmove', onDragMove, { passive: true });
+        window.addEventListener('touchend', onDragEnd);
+
+        widget.addEventListener('mousedown', onDragStart);
+        window.addEventListener('mousemove', onDragMove);
+        window.addEventListener('mouseup', onDragEnd);
+
+        widget.addEventListener('click', (e) => {
+            if (!dragHasMoved) {
+                toggleToolbars();
+            }
+        });
 
         // Switch Tab View Function
         function switchView(key) {
             if (!sites[key]) return;
             currentKey = key;
-
-            // คืนค่าการแสดงผลแถบเครื่องมือเมื่อสลับหน้า
-            toggleToolbars(true);
 
             // Update Bottom Nav UI States
             document.querySelectorAll('.bottom-nav-item').forEach(btn => {
@@ -541,11 +642,15 @@
             const frameContainer = document.getElementById('view-iframe-container');
             const mainFrame = document.getElementById('main-frame');
             const loader = document.getElementById('frame-loader');
+            const draggableWidget = document.getElementById('draggable-widget');
 
             if (key === 'hub') {
                 hubView.classList.remove('hidden');
                 frameContainer.classList.add('hidden');
                 frameContainer.classList.remove('flex');
+                if (draggableWidget) draggableWidget.classList.add('hidden');
+                // คืนค่าการแสดงผลแถบเครื่องมือเมื่อกลับมาหน้า Hub
+                toggleToolbars(true);
             } else {
                 hubView.classList.add('hidden');
                 frameContainer.classList.remove('hidden');
@@ -559,6 +664,9 @@
                 // Show loader and navigate frame
                 loader.classList.remove('hidden');
                 mainFrame.src = sites[key].url;
+
+                // *** เข้าสู่โหมดเต็มจอทันทีเมื่อเปิดแอป ***
+                toggleToolbars(false);
             }
         }
 
