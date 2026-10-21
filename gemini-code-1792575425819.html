@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="th" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>037Cafe & Studio Hub</title>
+
+    <!-- Logo & Apple iOS PWA Meta Tags -->
+    <link rel="icon" type="image/png" href="https://lh3.googleusercontent.com/d/13URW3wYnrYhy0aHzrwHG5Xx83pvcyBvL">
+    <link rel="apple-touch-icon" href="https://lh3.googleusercontent.com/d/13URW3wYnrYhy0aHzrwHG5Xx83pvcyBvL">
+    <link rel="apple-touch-icon" sizes="152x152" href="https://lh3.googleusercontent.com/d/13URW3wYnrYhy0aHzrwHG5Xx83pvcyBvL">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://lh3.googleusercontent.com/d/13URW3wYnrYhy0aHzrwHG5Xx83pvcyBvL">
+    <link rel="apple-touch-icon" sizes="167x167" href="https://lh3.googleusercontent.com/d/13URW3wYnrYhy0aHzrwHG5Xx83pvcyBvL">
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="037Cafe Hub">
+    <meta name="theme-color" content="#0c0a09">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome 6 Icons CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Google Fonts: Prompt & Kanit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        espresso: '#0c0a09',
+                        roast: '#1c1917',
+                        cardBg: '#262220',
+                        amberGold: '#d97706',
+                        amberWarm: '#f59e0b',
+                        bronzeAccent: '#b45309',
+                        creamText: '#f5f5f4',
+                    },
+                    fontFamily: {
+                        prompt: ['Prompt', 'sans-serif'],
+                        kanit: ['Kanit', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'amber-glow': '0 0 25px -5px rgba(217, 119, 6, 0.35)',
+                        'gold-glow': '0 4px 20px -2px rgba(245, 158, 11, 0.4)',
+                        'inner-dark': 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.6)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        * {
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        body {
+            font-family: 'Prompt', sans-serif;
+            background-color: #0c0a09;
+            color: #f5f5f4;
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+            padding-left: env(safe-area-inset-left);
+            padding-right: env(safe-area-inset-right);
+            overflow-x: hidden;
+        }
+
+        /* Glassmorphism Effect */
+        .glass-panel {
+            background: rgba(28, 25, 23, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(217, 119, 6, 0.15);
+        }
+
+        .glass-dock {
+            background: rgba(12, 10, 9, 0.88);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(245, 158, 11, 0.2);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0c0a09;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d97706;
+            border-radius: 4px;
+        }
+
+        /* Nav Active Tab Effect */
+        .bottom-nav-active {
+            color: #f59e0b !important;
+        }
+        .bottom-nav-active .nav-icon-bg {
+            background-color: rgba(217, 119, 6, 0.2);
+            box-shadow: 0 0 12px rgba(245, 158, 11, 0.4);
+            border: 1px solid rgba(245, 158, 11, 0.4);
+        }
+
+        /* Animation classes for toolbars */
+        .toolbar-hidden {
+            display: none !important;
+        }
+        .dock-hidden {
+            transform: translateY(100%);
+        }
+    </style>
+</head>
+<body class="h-screen flex flex-col justify-between bg-espresso text-creamText overflow-hidden select-none">
+
+    <!-- FLOATING RESTORE BUTTON (แสดงเมื่อพับแถบเครื่องมือ) -->
+    <button id="btn-restore-controls" onclick="toggleToolbars(true)" class="hidden fixed top-3 right-3 z-50 p-2 rounded-full glass-panel border border-amberWarm/50 text-amberWarm shadow-lg active:scale-95 transition flex items-center justify-center gap-1.5 px-3">
+        <img src="https://lh3.googleusercontent.com/d/13URW3wYnrYhy0aHzrwHG5Xx83pvcyBvL" class="w-5 h-5 rounded-full object-cover">
+        <span class="text-[11px] font-bold">เปิดเมนู</span>
+        <i class="fa-solid fa-chevron-down text-xs"></i>
+    </button>
+
+    <!-- TOP HEADER BAR -->
+    <header id="main-header" class="sticky top-0 z-40 bg-roast/90 backdrop-blur-xl border-b border-amberGold/20 px-4 py-2.5 flex items-center justify-between shadow-lg transition-all duration-300">
+        <!-- Logo & Branding -->
+        <div class="flex items-center space-x-3 cursor-pointer" onclick="switchView('hub')">
+            <div class="relative">
+                <img src="https://lh3.googleusercontent.com/d/13URW3wYnrYhy0aHzrwHG5Xx83pvcyBvL" 
+                     alt="037Cafe Logo" 
+                     class="w-10 h-10 rounded-full border-2 border-amberWarm/60 object-cover shadow-amber-glow">
+                <span class="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-roast rounded-full animate-pulse"></span>
+            </div>
+            <div>
+                <h1 class="font-kanit font-bold text-base text-amber-100 leading-tight tracking-wide flex items-center gap-1.5">
+                    037Cafe & Studio
+                </h1>
+                <p class="text-[10px] text-amber-400/80 font-medium tracking-wider uppercase">Management Hub</p>
+            </div>
+        </div>
+
+        <!-- Live Clock & Mode Control -->
+        <div class="flex items-center space-x-2">
+            <!-- Digital Clock Badge -->
+            <div class="hidden sm:flex flex-col items-end px-2.5 py-1 rounded-xl bg-espresso/60 border border-amberGold/20 text-right">
+                <span id="live-time" class="font-mono text-xs font-bold text-amberWarm">--:--:--</span>
+                <span id="live-date" class="text-[9px] text-stone-400">-- --- ----</span>
+            </div>
+
+            <!-- Reload / Quick Switch -->
+            <button onclick="switchView('hub')" class="p-2 rounded-xl bg-amberGold/15 text-amberWarm border border-amberGold/30 hover:bg-amberGold/30 transition active:scale-95 text-xs font-semibold flex items-center gap-1.5">
+                <i class="fa-solid fa-house-chimney"></i>
+                <span class="hidden xs:inline">หน้าแรก</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN APP CONTENT AREA -->
+    <main class="flex-1 relative overflow-hidden bg-gradient-to-b from-espresso via-roast/40 to-espresso">
+
+        <!-- 1. HUB DASHBOARD VIEW -->
+        <div id="view-hub" class="h-full overflow-y-auto p-4 pb-28 space-y-5">
+
+            <!-- Hero Banner -->
+            <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-roast via-cardBg to-espresso p-5 border border-amberGold/25 shadow-2xl">
+                <div class="absolute -right-8 -bottom-8 w-48 h-48 bg-amberWarm/10 rounded-full blur-2xl pointer-events-none"></div>
+                
+                <div class="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div>
+                        <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amberWarm/15 border border-amberWarm/30 text-amberWarm text-[11px] font-medium mb-2">
+                            <i class="fa-solid fa-wand-magic-sparkles text-xs"></i> 037 Workspace Central
+                        </div>
+                        <h2 class="font-kanit text-xl sm:text-2xl font-bold text-stone-100 tracking-tight">
+                            ศูนย์รวมระบบบริหารร้าน <span class="text-amberWarm">037</span>
+                        </h2>
+                        <p class="text-xs text-stone-300/80 mt-1 max-w-md leading-relaxed">
+                            เลือกใช้งานระบบสต๊อก ยอดขาย และพอร์ตโฟลิโอได้ง่ายในแอปเดียว
+                        </p>
+                    </div>
+
+                    <!-- Live Mobile Clock Display -->
+                    <div class="sm:hidden w-full flex items-center justify-between pt-2 border-t border-stone-800 text-xs">
+                        <span class="text-stone-400 text-[11px]"><i class="fa-regular fa-clock text-amberWarm mr-1"></i> เวลาปัจจุบัน</span>
+                        <div class="text-right">
+                            <span id="live-time-mobile" class="font-mono font-bold text-amberWarm text-xs">--:--:--</span>
+                            <span id="live-date-mobile" class="text-[10px] text-stone-400 ml-1.5">--/--/----</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- iOS PWA INSTALLATION TIP BANNER -->
+            <div id="ios-pwa-banner" class="glass-panel rounded-2xl p-3.5 border-amberWarm/30 flex items-center justify-between gap-3 text-xs">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-amberWarm/20 text-amberWarm flex items-center justify-center text-base shrink-0 border border-amberWarm/30">
+                        <i class="fa-solid fa-mobile-screen-button"></i>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-amber-100">ติดตั้งลงหน้าจอมือถือ (iOS/Android)</p>
+                        <p class="text-[11px] text-stone-400">กดปุ่มแชร์ <i class="fa-solid fa-share-from-square text-amberWarm"></i> แล้วเลือก <b>"เพิ่มไปยังหน้าจอโฮม"</b></p>
+                    </div>
+                </div>
+                <button onclick="dismissPwaBanner()" class="p-1.5 text-stone-400 hover:text-stone-200 transition">
+                    <i class="fa-solid fa-xmark text-sm"></i>
+                </button>
+            </div>
+
+            <!-- QUICK CARDS DIRECTORY GRID -->
+            <div>
+                <div class="flex items-center justify-between mb-3 px-1">
+                    <h3 class="font-kanit font-semibold text-base text-stone-200 flex items-center gap-2">
+                        <i class="fa-solid fa-layer-group text-amberWarm"></i> เลือกระบบที่ต้องการใช้งาน
+                    </h3>
+                    <span class="text-[11px] text-amber-400/80 font-mono">4 Systems</span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                    <!-- Card 1: Stock -->
+                    <div class="glass-panel rounded-2xl p-4 transition-all duration-200 hover:border-amberWarm/40 active:scale-[0.99] flex flex-col justify-between gap-3">
+                        <div class="flex items-start justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 rounded-2xl bg-amber-500/15 text-amberWarm border border-amber-500/30 flex items-center justify-center text-xl shadow-inner-dark">
+                                    <i class="fa-solid fa-boxes-stacked"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-kanit font-bold text-base text-stone-100">1. สต๊อกสินค้า</h4>
+                                    <p class="text-[11px] text-stone-400">คลังวัตถุดิบ & เช็คสต๊อก</p>
+                                </div>
+                            </div>
+                            <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 flex items-center gap-1">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> ออนไลน์
+                            </span>
+                        </div>
+
+                        <div class="flex items-center gap-2 pt-1 border-t border-stone-800">
+                            <button onclick="switchView('stock')" class="flex-1 bg-gradient-to-r from-amberGold to-amberWarm hover:brightness-110 text-stone-950 font-bold py-2 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-gold-glow transition">
+                                <i class="fa-solid fa-display"></i> เปิดในแอป
+                            </button>
+                            <a href="https://037cafestockv3.vercel.app/" target="_blank" class="p-2 bg-stone-800 hover:bg-stone-700 text-stone-300 rounded-xl text-xs border border-stone-700 transition" title="เปิดแท็บใหม่">
+                                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: Studio Sales -->
+                    <div class="glass-panel rounded-2xl p-4 transition-all duration-200 hover:border-amberWarm/40 active:scale-[0.99] flex flex-col justify-between gap-3">
+                        <div class="flex items-start justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 rounded-2xl bg-indigo-500/15 text-indigo-400 border border-indigo-500/30 flex items-center justify-center text-xl shadow-inner-dark">
+                                    <i class="fa-solid fa-camera-retro"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-kanit font-bold text-base text-stone-100">2. 037StudioSales</h4>
+                                    <p class="text-[11px] text-stone-400">ระบบขาย & จองคิว Studio</p>
+                                </div>
+                            </div>
+                            <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 flex items-center gap-1">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> ออนไลน์
+                            </span>
+                        </div>
+
+                        <div class="flex items-center gap-2 pt-1 border-t border-stone-800">
+                            <button onclick="switchView('studiosales')" class="flex-1 bg-gradient-to-r from-amberGold to-amberWarm hover:brightness-110 text-stone-950 font-bold py-2 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-gold-glow transition">
+                                <i class="fa-solid fa-display"></i> เปิดในแอป
+                            </button>
+                            <a href="https://037studiosales.vercel.app/" target="_blank" class="p-2 bg-stone-800 hover:bg-stone-700 text-stone-300 rounded-xl text-xs border border-stone-700 transition" title="เปิดแท็บใหม่">
+                                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Card 3: Cafe Sales -->
+                    <div class="glass-panel rounded-2xl p-4 transition-all duration-200 hover:border-amberWarm/40 active:scale-[0.99] flex flex-col justify-between gap-3">
+                        <div class="flex items-start justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 rounded-2xl bg-amber-600/15 text-amber-500 border border-amber-600/30 flex items-center justify-center text-xl shadow-inner-dark">
+                                    <i class="fa-solid fa-mug-hot"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-kanit font-bold text-base text-stone-100">3. 037CafeSales</h4>
+                                    <p class="text-[11px] text-stone-400">ระบบขายหน้าร้าน Cafe POS</p>
+                                </div>
+                            </div>
+                            <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 flex items-center gap-1">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> ออนไลน์
+                            </span>
+                        </div>
+
+                        <div class="flex items-center gap-2 pt-1 border-t border-stone-800">
+                            <button onclick="switchView('cafesales')" class="flex-1 bg-gradient-to-r from-amberGold to-amberWarm hover:brightness-110 text-stone-950 font-bold py-2 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-gold-glow transition">
+                                <i class="fa-solid fa-display"></i> เปิดในแอป
+                            </button>
+                            <a href="https://037cafestudiosales.vercel.app/" target="_blank" class="p-2 bg-stone-800 hover:bg-stone-700 text-stone-300 rounded-xl text-xs border border-stone-700 transition" title="เปิดแท็บใหม่">
+                                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Card 4: Studio Portfolio -->
+                    <div class="glass-panel rounded-2xl p-4 transition-all duration-200 hover:border-amberWarm/40 active:scale-[0.99] flex flex-col justify-between gap-3">
+                        <div class="flex items-start justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 rounded-2xl bg-rose-500/15 text-rose-400 border border-rose-500/30 flex items-center justify-center text-xl shadow-inner-dark">
+                                    <i class="fa-solid fa-photo-film"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-kanit font-bold text-base text-stone-100">4. 037StudioPortfolio</h4>
+                                    <p class="text-[11px] text-stone-400">เว็บพอร์ตโพลีโอ & ผลงาน</p>
+                                </div>
+                            </div>
+                            <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 flex items-center gap-1">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> ออนไลน์
+                            </span>
+                        </div>
+
+                        <div class="flex items-center gap-2 pt-1 border-t border-stone-800">
+                            <button onclick="switchView('portfolio')" class="flex-1 bg-gradient-to-r from-amberGold to-amberWarm hover:brightness-110 text-stone-950 font-bold py-2 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-gold-glow transition">
+                                <i class="fa-solid fa-display"></i> เปิดในแอป
+                            </button>
+                            <a href="https://037studio-portfolio.vercel.app/" target="_blank" class="p-2 bg-stone-800 hover:bg-stone-700 text-stone-300 rounded-xl text-xs border border-stone-700 transition" title="เปิดแท็บใหม่">
+                                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- SYSTEM STATS / QUICK INFO -->
+            <div class="glass-panel rounded-2xl p-4 border-stone-800 text-xs flex justify-around text-center">
+                <div>
+                    <span class="block text-amberWarm font-bold text-lg font-mono">4</span>
+                    <span class="text-stone-400 text-[11px]">เว็บทั้งหมด</span>
+                </div>
+                <div class="w-px bg-stone-800 h-8 my-auto"></div>
+                <div>
+                    <span class="block text-emerald-400 font-bold text-lg font-mono">100%</span>
+                    <span class="text-stone-400 text-[11px]">สถานะระบบ</span>
+                </div>
+                <div class="w-px bg-stone-800 h-8 my-auto"></div>
+                <div>
+                    <span class="block text-indigo-400 font-bold text-lg font-mono">PWA</span>
+                    <span class="text-stone-400 text-[11px]">รองรับมือถือ</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- 2. EMBEDDED IFRAME VIEW CONTAINER -->
+        <div id="view-iframe-container" class="w-full h-full hidden flex-col relative bg-stone-950">
+            
+            <!-- Dynamic Viewer Control Bar -->
+            <div id="sub-toolbar" class="h-11 bg-roast/95 border-b border-amberGold/20 px-3 flex items-center justify-between text-xs shrink-0 z-20">
+                <div class="flex items-center space-x-2 overflow-hidden">
+                    <span id="active-web-icon" class="text-amberWarm text-sm">
+                        <i class="fa-solid fa-globe"></i>
+                    </span>
+                    <span id="active-web-title" class="font-kanit font-semibold text-stone-200 truncate max-w-[150px] sm:max-w-xs">
+                        ชื่อเว็บที่เปิด
+                    </span>
+                </div>
+
+                <div class="flex items-center space-x-1.5">
+                    <!-- Refresh Frame -->
+                    <button onclick="reloadFrame()" class="p-1.5 rounded-lg bg-stone-800 hover:bg-stone-700 text-amberWarm transition" title="รีเฟรชหน้าเว็บ">
+                        <i class="fa-solid fa-arrows-rotate"></i>
+                    </button>
+                    <!-- External Link -->
+                    <a id="btn-external-link" href="#" target="_blank" class="p-1.5 rounded-lg bg-stone-800 hover:bg-stone-700 text-amberWarm transition" title="เปิดแท็บใหม่">
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                    </a>
+                    <!-- Hide Toolbars Button (ปุ่ม ✕ สำหรับเลื่อนพับปิดแถบเครื่องมือ) -->
+                    <button onclick="toggleToolbars(false)" class="p-1.5 rounded-lg bg-amberWarm text-stone-950 font-bold transition hover:bg-amber-400 active:scale-95" title="ปิดแถบเครื่องมือ (ดูจอใหญ่)">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Loader Overlay -->
+            <div id="frame-loader" class="absolute inset-0 top-11 bg-stone-950/90 backdrop-blur-sm z-10 flex flex-col items-center justify-center gap-3">
+                <div class="w-10 h-10 border-3 border-stone-800 border-t-amberWarm rounded-full animate-spin"></div>
+                <p class="font-kanit text-xs text-amber-300 animate-pulse">กำลังโหลดระบบ...</p>
+            </div>
+
+            <!-- Main Dynamic Iframe -->
+            <div class="flex-1 relative w-full h-full">
+                <iframe id="main-frame" 
+                        class="w-full h-full border-0 relative z-1" 
+                        title="037 Web Viewer"
+                        onload="onFrameLoaded()"
+                        allow="geolocation; microphone; camera; payment">
+                </iframe>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- MOBILE BOTTOM NAVIGATION DOCK -->
+    <nav id="bottom-dock" class="fixed bottom-0 left-0 right-0 z-50 glass-dock px-2 py-1.5 flex justify-around items-center">
+        <!-- Hub / Home -->
+        <button id="nav-hub" onclick="switchView('hub')" class="bottom-nav-item flex flex-col items-center py-1 px-2.5 rounded-xl text-stone-400 hover:text-amberWarm transition group bottom-nav-active">
+            <div class="nav-icon-bg w-7 h-7 rounded-lg flex items-center justify-center mb-0.5 transition-all">
+                <i class="fa-solid fa-house text-sm"></i>
+            </div>
+            <span class="text-[10px] font-medium tracking-tight">โฮม</span>
+        </button>
+
+        <!-- Stock -->
+        <button id="nav-stock" onclick="switchView('stock')" class="bottom-nav-item flex flex-col items-center py-1 px-2.5 rounded-xl text-stone-400 hover:text-amberWarm transition group">
+            <div class="nav-icon-bg w-7 h-7 rounded-lg flex items-center justify-center mb-0.5 transition-all">
+                <i class="fa-solid fa-boxes-stacked text-sm"></i>
+            </div>
+            <span class="text-[10px] font-medium tracking-tight">สต๊อก</span>
+        </button>
+
+        <!-- Studio Sales -->
+        <button id="nav-studiosales" onclick="switchView('studiosales')" class="bottom-nav-item flex flex-col items-center py-1 px-2.5 rounded-xl text-stone-400 hover:text-amberWarm transition group">
+            <div class="nav-icon-bg w-7 h-7 rounded-lg flex items-center justify-center mb-0.5 transition-all">
+                <i class="fa-solid fa-camera-retro text-sm"></i>
+            </div>
+            <span class="text-[10px] font-medium tracking-tight">Studio</span>
+        </button>
+
+        <!-- Cafe Sales -->
+        <button id="nav-cafesales" onclick="switchView('cafesales')" class="bottom-nav-item flex flex-col items-center py-1 px-2.5 rounded-xl text-stone-400 hover:text-amberWarm transition group">
+            <div class="nav-icon-bg w-7 h-7 rounded-lg flex items-center justify-center mb-0.5 transition-all">
+                <i class="fa-solid fa-mug-hot text-sm"></i>
+            </div>
+            <span class="text-[10px] font-medium tracking-tight">Cafe</span>
+        </button>
+
+        <!-- Portfolio -->
+        <button id="nav-portfolio" onclick="switchView('portfolio')" class="bottom-nav-item flex flex-col items-center py-1 px-2.5 rounded-xl text-stone-400 hover:text-amberWarm transition group">
+            <div class="nav-icon-bg w-7 h-7 rounded-lg flex items-center justify-center mb-0.5 transition-all">
+                <i class="fa-solid fa-photo-film text-sm"></i>
+            </div>
+            <span class="text-[10px] font-medium tracking-tight">ผลงาน</span>
+        </button>
+    </nav>
+
+    <!-- JAVASCRIPT APP LOGIC -->
+    <script>
+        // Website Registry Data
+        const sites = {
+            hub: {
+                title: "หน้าแรก (Hub)",
+                icon: "fa-solid fa-house",
+                url: null
+            },
+            stock: {
+                title: "1. สต๊อกสินค้า",
+                icon: "fa-solid fa-boxes-stacked",
+                url: "https://037cafestockv3.vercel.app/"
+            },
+            studiosales: {
+                title: "2. 037StudioSales",
+                icon: "fa-solid fa-camera-retro",
+                url: "https://037studiosales.vercel.app/"
+            },
+            cafesales: {
+                title: "3. 037CafeSales",
+                icon: "fa-solid fa-mug-hot",
+                url: "https://037cafestudiosales.vercel.app/"
+            },
+            portfolio: {
+                title: "4. 037StudioPortfolio",
+                icon: "fa-solid fa-photo-film",
+                url: "https://037studio-portfolio.vercel.app/"
+            }
+        };
+
+        let currentKey = 'hub';
+
+        // Thai Live Clock Function
+        function updateLiveClock() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('th-TH', { hour12: false });
+            
+            // Thai Date formatting
+            const thaiMonths = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
+            const dateString = `${now.getDate()} ${thaiMonths[now.getMonth()]} ${now.getFullYear() + 543}`;
+
+            document.getElementById('live-time').textContent = timeString;
+            document.getElementById('live-date').textContent = dateString;
+            
+            const mobileTime = document.getElementById('live-time-mobile');
+            const mobileDate = document.getElementById('live-date-mobile');
+            if (mobileTime) mobileTime.textContent = timeString;
+            if (mobileDate) mobileDate.textContent = dateString;
+        }
+
+        setInterval(updateLiveClock, 1000);
+        updateLiveClock();
+
+        // Function สำหรับ ซ่อน/แสดง แถบเครื่องมือทั้งหมด
+        function toggleToolbars(show) {
+            const header = document.getElementById('main-header');
+            const subToolbar = document.getElementById('sub-toolbar');
+            const bottomDock = document.getElementById('bottom-dock');
+            const btnRestore = document.getElementById('btn-restore-controls');
+
+            if (show) {
+                header.classList.remove('toolbar-hidden');
+                subToolbar.classList.remove('toolbar-hidden');
+                bottomDock.classList.remove('dock-hidden');
+                btnRestore.classList.add('hidden');
+            } else {
+                header.classList.add('toolbar-hidden');
+                subToolbar.classList.add('toolbar-hidden');
+                bottomDock.classList.add('dock-hidden');
+                btnRestore.classList.remove('hidden');
+            }
+        }
+
+        // Switch Tab View Function
+        function switchView(key) {
+            if (!sites[key]) return;
+            currentKey = key;
+
+            // คืนค่าการแสดงผลแถบเครื่องมือเมื่อสลับหน้า
+            toggleToolbars(true);
+
+            // Update Bottom Nav UI States
+            document.querySelectorAll('.bottom-nav-item').forEach(btn => {
+                btn.classList.remove('bottom-nav-active');
+            });
+            const activeNavBtn = document.getElementById(`nav-${key}`);
+            if (activeNavBtn) activeNavBtn.classList.add('bottom-nav-active');
+
+            const hubView = document.getElementById('view-hub');
+            const frameContainer = document.getElementById('view-iframe-container');
+            const mainFrame = document.getElementById('main-frame');
+            const loader = document.getElementById('frame-loader');
+
+            if (key === 'hub') {
+                hubView.classList.remove('hidden');
+                frameContainer.classList.add('hidden');
+                frameContainer.classList.remove('flex');
+            } else {
+                hubView.classList.add('hidden');
+                frameContainer.classList.remove('hidden');
+                frameContainer.classList.add('flex');
+
+                // Update Header info in Frame View
+                document.getElementById('active-web-title').textContent = sites[key].title;
+                document.getElementById('active-web-icon').innerHTML = `<i class="${sites[key].icon}"></i>`;
+                document.getElementById('btn-external-link').href = sites[key].url;
+
+                // Show loader and navigate frame
+                loader.classList.remove('hidden');
+                mainFrame.src = sites[key].url;
+            }
+        }
+
+        function onFrameLoaded() {
+            const loader = document.getElementById('frame-loader');
+            if (loader) loader.classList.add('hidden');
+        }
+
+        function reloadFrame() {
+            const mainFrame = document.getElementById('main-frame');
+            const loader = document.getElementById('frame-loader');
+            if (mainFrame && sites[currentKey].url) {
+                loader.classList.remove('hidden');
+                mainFrame.src = sites[currentKey].url;
+            }
+        }
+
+        function dismissPwaBanner() {
+            const banner = document.getElementById('ios-pwa-banner');
+            if (banner) banner.style.display = 'none';
+        }
+    </script>
+</body>
+</html>
